@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 setup(
     name='tabref',
     version='0.1',
-    description=:"Cross-referencing tool for tabular data (in databases or CSV)",.
+    description="Cross-referencing tool for tabular data (in databases or CSV)",
     long_description="",
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -31,7 +31,9 @@ setup(
         'psycopg2',
         'sqlalchemy',
         'unicodecsv',
-        'pyahocorasick'
+        'pyahocorasick',
+        'normality',
+        'fingerprints'
     ],
     tests_require=[
         'nose',
