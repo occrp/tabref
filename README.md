@@ -35,3 +35,8 @@ $ tabref sql --db postgresql://localhost/mydb --match-list searches.csv --out-pa
 # Search inside a CSV file:
 $ tabref csv --match-list searches.csv --out-path matches/ mycsv.csv
 ```
+
+## TODO
+
+* Use click's path handling
+* Multi-threading of matcher process
