@@ -18,6 +18,8 @@ class CsvTableSearcher(TableSearcher):
         try:
             with open(self.file_name, 'r') as fh:
                 encoding = guess_encoding(fh.read(4096 * 10))
+                if encoding != 'utf-8':
+                    log.info("Decode [%s]: %s", self.file_name, encoding)
                 fh.seek(0)
                 for row in DictReader(fh, encoding=encoding):
                     yield row
