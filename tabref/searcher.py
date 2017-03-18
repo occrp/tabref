@@ -2,8 +2,10 @@ import os
 import logging
 from unicodecsv import writer
 from collections import OrderedDict
+from collections import defaultdict
 from Queue import Queue
 from threading import RLock, Thread
+from pprint import pprint  # noqa
 import multiprocessing
 
 from tabref.util import normalize_value
@@ -49,22 +51,23 @@ class TableSearcher(object):
             self.lock.release()
 
     def match_row(self, row):
+        matches = defaultdict(list)
+
         for key, text in row.items():
-            # see if this the cell value clearly numeric:
-            try:
-                float(text)
-                continue
-            except:
-                pass
             norm = normalize_value(text)
             if norm is None:
                 continue
+
             for (_, match) in self.matcher.iter(norm):
-                result = OrderedDict(row.items())
-                result['_match_name'] = match
-                result['_match_field'] = key
-                self.write_result(result)
-                self.match_count += 1
+                matches[match].append(key)
+
+        for match, fields in matches.items():
+            result = OrderedDict(row.items())
+            result['_match_name'] = match
+            result['_match_field'] = ', '.join(fields)
+            # pprint(dict(result))
+            self.write_result(result)
+            self.match_count += 1
 
     def handle_row(self):
         while True:
@@ -86,7 +89,8 @@ class TableSearcher(object):
 
             if count % 10000 == 0 and count > 0:
                 log.info("[%s] done: %s rows, %s matches, %d queued",
-                         self.base_name, count, self.match_count, self.queue.qsize())
+                         self.base_name, count, self.match_count,
+                         self.queue.qsize())
 
         self.queue.join()
         self.finalize()
