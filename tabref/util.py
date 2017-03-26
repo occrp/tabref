@@ -16,7 +16,7 @@ def normalize_value(text):
     if text is None:
         return
 
-    if len(text) < 4:
+    if len(text) <= 3:
         return
 
     text = u' %s ' % text
