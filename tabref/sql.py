@@ -20,7 +20,7 @@ class SqlTableSearcher(TableSearcher):
     def rows(self):
         rp = self.meta.bind.execute(self.table.select())
         while True:
-            rows = rp.fetchmany(100000)
+            rows = rp.fetchmany(10000)
             if rows is None or not len(rows):
                 break
             for row in rows:

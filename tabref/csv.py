@@ -1,6 +1,6 @@
 import logging
 from normality import slugify, guess_encoding
-from unicodecsv import DictReader
+from unicodecsv import DictReader, Sniffer
 
 from tabref.searcher import TableSearcher
 
@@ -17,11 +17,14 @@ class CsvTableSearcher(TableSearcher):
     def rows(self):
         try:
             with open(self.file_name, 'r') as fh:
-                encoding = guess_encoding(fh.read(4096 * 10))
+                sample = fh.read(4096 * 10)
+                encoding = guess_encoding(sample)
                 if encoding != 'utf-8':
                     log.info("Decode [%s]: %s", self.file_name, encoding)
+                sample = sample.decode(encoding, 'replace')
+                dialect = Sniffer().sniff(sample)
                 fh.seek(0)
-                for row in DictReader(fh, encoding=encoding):
+                for row in DictReader(fh, encoding=encoding, dialect=dialect):
                     yield row
         except Exception as exc:
             log.error('Failed reading file [%s]: %s', self.file_name, exc)
