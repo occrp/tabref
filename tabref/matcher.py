@@ -2,7 +2,7 @@ import logging
 from unicodecsv import DictReader
 from ahocorasick import Automaton
 
-from tabref.util import normalize_value
+from tabref.util import normalize_value, decode_path
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def is_superset(token, tokens):
 
 def create_matcher(file_name):
     tokens = {}
-    with open(file_name, 'r') as fh:
+    with open(decode_path(file_name), 'r') as fh:
         for row in DictReader(fh):
             name = row.get('name')
             token = normalize_value(name)

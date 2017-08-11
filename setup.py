@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='tabref',
-    version='0.1',
+    version='0.2',
     description="Cross-referencing tool for tabular data (in databases or CSV)",
     long_description="",
     classifiers=[

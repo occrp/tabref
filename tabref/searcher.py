@@ -8,7 +8,7 @@ from threading import RLock, Thread
 from pprint import pprint  # noqa
 import multiprocessing
 
-from tabref.util import normalize_value
+from tabref.util import normalize_value, decode_path
 
 log = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class TableSearcher(object):
 
     def __init__(self, matcher, out_dir, base_name):
         self.matcher = matcher
-        self.out_dir = out_dir
+        self.out_dir = decode_path(out_dir)
         self.base_name = base_name
         self.queue = Queue(maxsize=50000)
         self.match_count = 0
@@ -34,6 +34,7 @@ class TableSearcher(object):
             if self.result_writer is None:
                 self.headers = result.keys()
                 result_path = '%s.csv' % self.base_name
+                result_path = decode_path(result_path)
                 result_path = os.path.join(self.out_dir, result_path)
                 self.result_fh = open(result_path, 'w')
                 self.result_writer = writer(self.result_fh)

@@ -6,6 +6,7 @@ from pprint import pprint  # noqa
 from tabref.matcher import create_matcher
 from tabref.csv import CsvTableSearcher
 from tabref.sql import SqlTableSearcher, connect_db
+from tabref.util import decode_path
 
 log = logging.getLogger('tabref')
 
@@ -54,6 +55,8 @@ def sql(ctx, db, tables, out_path, match_list):
 def csv(ctx, path, out_path, match_list):
     """Cross-reference a CSV, or folder of CSV files against the match list."""
     matcher = create_matcher(match_list)
+    path = decode_path(path)
+    out_path = decode_path(out_path)
 
     if not os.path.exists(path):
         log.error("File does not exist: %s", path)
@@ -67,7 +70,7 @@ def csv(ctx, path, out_path, match_list):
     for (dirpath, dirnames, filenames) in os.walk(path):
         dirpath = os.path.join(path, dirpath)
         for filename in filenames:
-            filepath = os.path.join(dirpath, filename)
+            filepath = os.path.join(dirpath, decode_path(filename))
             searcher = CsvTableSearcher(matcher, out_path, filepath)
             searcher.process()
 

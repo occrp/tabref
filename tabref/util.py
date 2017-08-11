@@ -1,3 +1,5 @@
+import sys
+import six
 import fingerprints
 
 
@@ -21,3 +23,11 @@ def normalize_value(text):
 
     text = u' %s ' % text
     return text.encode('utf-8')
+
+
+def decode_path(file_path):
+    if file_path is None:
+        return
+    if isinstance(file_path, six.binary_type):
+        file_path = file_path.decode(sys.getfilesystemencoding())
+    return six.text_type(file_path)
